@@ -1249,6 +1249,7 @@ public class Coordinator {
                             PExecBatchPlanFragmentsResult result =
                                     pair.second.get(queryDeliveryTimeoutMs, TimeUnit.MILLISECONDS);
                             code = TStatusCode.findByValue(result.status.statusCode);
+                            LOG.info("batch call be :params:"+ GsonUtils.GSON.toJson(pair.first)+",response:"+GsonUtils.GSON.toJson(result));
                             if (result.status.errorMsgs != null && !result.status.errorMsgs.isEmpty()) {
                                 errMsg = result.status.errorMsgs.get(0);
                             }
