@@ -51,6 +51,7 @@ import com.starrocks.common.util.TimeUtils;
 import com.starrocks.load.EtlJobType;
 import com.starrocks.load.loadv2.LoadJob;
 import com.starrocks.mysql.privilege.Auth;
+import com.starrocks.persist.gson.GsonUtils;
 import com.starrocks.planner.DataPartition;
 import com.starrocks.planner.DataSink;
 import com.starrocks.planner.DataStreamSink;
@@ -938,6 +939,7 @@ public class Coordinator {
                             if (result.status.errorMsgs != null && !result.status.errorMsgs.isEmpty()) {
                                 errMsg = result.status.errorMsgs.get(0);
                             }
+                            LOG.info("call be :params:"+ GsonUtils.GSON.toJson(pair.first)+",response:"+GsonUtils.GSON.toJson(result));
                         } catch (ExecutionException e) {
                             LOG.warn("catch a execute exception", e);
                             code = TStatusCode.THRIFT_RPC_ERROR;
