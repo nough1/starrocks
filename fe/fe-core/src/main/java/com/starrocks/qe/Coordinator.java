@@ -29,6 +29,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrocks.analysis.DescriptorTable;
 import com.starrocks.analysis.UserIdentity;
 import com.starrocks.catalog.FsBroker;
@@ -939,7 +941,10 @@ public class Coordinator {
                             if (result.status.errorMsgs != null && !result.status.errorMsgs.isEmpty()) {
                                 errMsg = result.status.errorMsgs.get(0);
                             }
-                            LOG.info("call be param:{},res:{}", GsonUtils.GSON.toJson(pair.first), GsonUtils.GSON.toJson(result));
+                            ObjectMapper mapper = new ObjectMapper();
+                            String paramStr = mapper.writeValueAsString(pair.first);
+                            String resultStr = mapper.writeValueAsString(result);
+                            LOG.info("call be param:{},res:{}", paramStr, resultStr);
                         } catch (ExecutionException e) {
                             LOG.warn("catch a execute exception", e);
                             code = TStatusCode.THRIFT_RPC_ERROR;
@@ -1249,7 +1254,10 @@ public class Coordinator {
                             PExecBatchPlanFragmentsResult result =
                                     pair.second.get(queryDeliveryTimeoutMs, TimeUnit.MILLISECONDS);
                             code = TStatusCode.findByValue(result.status.statusCode);
-                            LOG.info("call be param:{},res:{}", GsonUtils.GSON.toJson(pair.first), GsonUtils.GSON.toJson(result));
+                            ObjectMapper mapper = new ObjectMapper();
+                            String paramStr = mapper.writeValueAsString(pair.first);
+                            String resultStr = mapper.writeValueAsString(result);
+                            LOG.info("call be param:{},res:{}", paramStr, resultStr);
                             if (result.status.errorMsgs != null && !result.status.errorMsgs.isEmpty()) {
                                 errMsg = result.status.errorMsgs.get(0);
                             }
