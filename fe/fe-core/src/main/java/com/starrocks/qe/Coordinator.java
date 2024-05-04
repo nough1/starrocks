@@ -28,9 +28,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.google.common.collect.Sets;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.starrocks.analysis.DescriptorTable;
 import com.starrocks.analysis.UserIdentity;
 import com.starrocks.catalog.FsBroker;
@@ -53,7 +55,6 @@ import com.starrocks.common.util.TimeUtils;
 import com.starrocks.load.EtlJobType;
 import com.starrocks.load.loadv2.LoadJob;
 import com.starrocks.mysql.privilege.Auth;
-import com.starrocks.persist.gson.GsonUtils;
 import com.starrocks.planner.DataPartition;
 import com.starrocks.planner.DataSink;
 import com.starrocks.planner.DataStreamSink;
