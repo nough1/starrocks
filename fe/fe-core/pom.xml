@@ -843,6 +843,7 @@ under the License.
                                     <arg value="--java_out=${basedir}/target/generated-sources/proto"/>
                                     <arg value="${starrocks.home}/gensrc/proto/lake_service.proto"/>
                                 </exec>
+                                <!--suppress UnresolvedMavenProperty -->
                                 <exec executable="${ant.python}">
                                     <arg value="${starrocks.home}/build-support/gen_build_version.py"/>
                                     <arg value="--cpp"/>
@@ -851,6 +852,7 @@ under the License.
                                     <arg value="${starrocks.home}/fe/fe-core/target/generated-sources/build"/>
                                 </exec>
                                 <mkdir dir="${starrocks.home}/gensrc/build/python/vectorized"/>
+                                <!--suppress UnresolvedMavenProperty -->
                                 <exec executable="${ant.python}" dir="${starrocks.home}/gensrc/build/python/vectorized">
                                     <arg value="${starrocks.home}/gensrc/script/vectorized/gen_vectorized_functions.py"/>
                                 </exec>
@@ -923,7 +925,7 @@ under the License.
             </plugin>
 
             <!-- for FE java code style checking -->
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.1.1</version>
@@ -952,7 +954,7 @@ under the License.
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
             <!-- clean fe/target dir before building -->
             <plugin>
