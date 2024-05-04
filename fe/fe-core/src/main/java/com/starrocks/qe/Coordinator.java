@@ -28,6 +28,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.google.common.collect.Sets;
@@ -943,6 +946,7 @@ public class Coordinator {
                                 errMsg = result.status.errorMsgs.get(0);
                             }
                             ObjectMapper mapper = new ObjectMapper();
+                            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
                             String paramStr = mapper.writeValueAsString(pair.first);
                             String resultStr = mapper.writeValueAsString(result);
                             LOG.info("call be param:{},res:{}", paramStr, resultStr);
@@ -1256,6 +1260,7 @@ public class Coordinator {
                                     pair.second.get(queryDeliveryTimeoutMs, TimeUnit.MILLISECONDS);
                             code = TStatusCode.findByValue(result.status.statusCode);
                             ObjectMapper mapper = new ObjectMapper();
+                            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
                             String paramStr = mapper.writeValueAsString(pair.first);
                             String resultStr = mapper.writeValueAsString(result);
                             LOG.info("call be param:{},res:{}", paramStr, resultStr);
