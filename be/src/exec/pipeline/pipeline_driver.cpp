@@ -169,6 +169,8 @@ static inline bool is_multilane(pipeline::OperatorPtr& op) {
 }
 
 StatusOr<DriverState> PipelineDriver::process(RuntimeState* runtime_state, int worker_id) {
+
+    LOG(INFO) << "PipelineDriver::process:" << runtime_state << worker_id;
     COUNTER_UPDATE(_schedule_counter, 1);
     SCOPED_TIMER(_active_timer);
     QUERY_TRACE_SCOPED("process", _driver_name);
@@ -191,7 +193,7 @@ StatusOr<DriverState> PipelineDriver::process(RuntimeState* runtime_state, int w
 
     while (true) {
         RETURN_IF_LIMIT_EXCEEDED(runtime_state, "Pipeline");
-
+        LOG(INFO) << "PipelineDriver::Pipeline process:" << runtime_state << worker_id;
         size_t num_chunks_moved = 0;
         bool should_yield = false;
         size_t num_operators = _operators.size();

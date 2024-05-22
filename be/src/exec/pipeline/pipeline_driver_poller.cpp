@@ -149,11 +149,13 @@ void PipelineDriverPoller::add_blocked_driver(const DriverRawPtr driver) {
     std::unique_lock<std::mutex> lock(_global_mutex);
     _blocked_drivers.push_back(driver);
     driver->_pending_timer_sw->reset();
+    LOG(INFO) << "add blocked driver :" << driver;
     _cond.notify_one();
 }
 
 void PipelineDriverPoller::remove_blocked_driver(DriverList& local_blocked_drivers, DriverList::iterator& driver_it) {
     auto& driver = *driver_it;
+    LOG(INFO) << "remove blocked driver :" << driver;
     driver->_pending_timer->update(driver->_pending_timer_sw->elapsed_time());
     local_blocked_drivers.erase(driver_it++);
 }
