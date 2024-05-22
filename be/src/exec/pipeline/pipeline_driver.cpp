@@ -193,7 +193,7 @@ StatusOr<DriverState> PipelineDriver::process(RuntimeState* runtime_state, int w
 
     while (true) {
         RETURN_IF_LIMIT_EXCEEDED(runtime_state, "Pipeline");
-        LOG(INFO) << "PipelineDriver::Pipeline process:" << runtime_state << worker_id;
+
         size_t num_chunks_moved = 0;
         bool should_yield = false;
         size_t num_operators = _operators.size();
@@ -214,7 +214,7 @@ StatusOr<DriverState> PipelineDriver::process(RuntimeState* runtime_state, int w
                 SCOPED_RAW_TIMER(&time_spent);
                 auto& curr_op = _operators[i];
                 auto& next_op = _operators[i + 1];
-
+                LOG(INFO) << "PipelineDriver::Pipeline opeartor:" << curr_op << next_op;
                 // Check curr_op finished firstly
                 if (curr_op->is_finished()) {
                     if (i == 0) {
