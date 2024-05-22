@@ -214,7 +214,7 @@ StatusOr<DriverState> PipelineDriver::process(RuntimeState* runtime_state, int w
                 SCOPED_RAW_TIMER(&time_spent);
                 auto& curr_op = _operators[i];
                 auto& next_op = _operators[i + 1];
-                LOG(INFO) << "PipelineDriver::Pipeline opeartor:" << curr_op->get_name() << next_op->get_name();
+                LOG(INFO) << "debugInfo PipelineDriver::process operator:" << i << "," <<  num_operators << "," << curr_op->get_name() << "," << next_op->get_name() << runtime_state->fragment_instance_id();
                 // Check curr_op finished firstly
                 if (curr_op->is_finished()) {
                     if (i == 0) {

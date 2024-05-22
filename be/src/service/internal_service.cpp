@@ -296,7 +296,7 @@ Status PInternalServiceImplBase<T>::_exec_plan_fragment(brpc::Controller* cntl) 
         RETURN_IF_ERROR(deserialize_thrift_msg(buf, &len, TProtocolType::BINARY, &t_request));
     }
     bool is_pipeline = t_request.__isset.is_pipeline && t_request.is_pipeline;
-    LOG(INFO) << "exec plan fragment, fragment_instance_id=" << print_id(t_request.params.fragment_instance_id)
+    LOG(INFO) << "debugInfo: exec plan fragment, fragment_instance_id=" << print_id(t_request.params.fragment_instance_id)
               << ", coord=" << t_request.coord << ", backend=" << t_request.backend_num
               << ", is_pipeline=" << is_pipeline << ", chunk_size=" << t_request.query_options.batch_size;
     if (is_pipeline) {
@@ -330,8 +330,9 @@ Status PInternalServiceImplBase<T>::_exec_batch_plan_fragments(brpc::Controller*
     std::vector<PromiseStatusSharedPtr> promise_statuses;
     for (int i = 1; i < unique_requests.size(); ++i) {
         auto& unique_request = unique_requests[i];
-        LOG(INFO) << "exec plan fragment, fragment_instance_id=" << print_id(unique_request.params.fragment_instance_id)
-                  << ", coord=" << common_request.coord << ", backend=" << unique_request.backend_num
+        //
+        LOG(INFO) << "debugInfo exec plan fragment, fragment_instance_id=" << print_id(unique_request.params.fragment_instance_id) << ",instance num:" << unique_request.params.instances_number
+                << unique_request.params.fragment_instance_id << ", coord=" << common_request.coord << ", backend=" << unique_request.backend_num
                   << ", is_pipeline=1"
                   << ", chunk_size=" << common_request.query_options.batch_size;
 
