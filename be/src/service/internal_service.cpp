@@ -296,9 +296,9 @@ Status PInternalServiceImplBase<T>::_exec_plan_fragment(brpc::Controller* cntl) 
         RETURN_IF_ERROR(deserialize_thrift_msg(buf, &len, TProtocolType::BINARY, &t_request));
     }
     bool is_pipeline = t_request.__isset.is_pipeline && t_request.is_pipeline;
-    LOG(INFO) << "debugInfo: exec plan fragment, fragment_instance_id=" << print_id(t_request.params.fragment_instance_id)
+    LOG(WARNING) << "debugInfo: exec plan fragment, fragment_instance_id=" << print_id(t_request.params.fragment_instance_id)
               << ", coord=" << t_request.coord << ", backend=" << t_request.backend_num
-              << ", is_pipeline=" << is_pipeline << ", chunk_size=" << t_request.query_options.batch_size;
+              << ", is_pipeline=" << is_pipeline << ", chunk_size=" << t_request.query_options.batch_size << "queryId:";
     if (is_pipeline) {
         return _exec_plan_fragment_by_pipeline(t_request, t_request);
     } else {
@@ -318,6 +318,12 @@ Status PInternalServiceImplBase<T>::_exec_batch_plan_fragments(brpc::Controller*
 
     auto& common_request = t_batch_requests->common_param;
     auto& unique_requests = t_batch_requests->unique_param_per_instance;
+
+    auto& first_unique_request = unique_requests[0];
+    LOG(WARNING) << "debugInfo exec plan fragment, fragment_instance_id=" << print_id(first_unique_request.params.fragment_instance_id) << ",instance num:" << first_unique_request.params.instances_number
+              << first_unique_request.params.fragment_instance_id << ", coord=" << common_request.coord << ", backend=" << first_unique_request.backend_num
+              << ", is_pipeline=1"
+              << ", chunk_size=" << common_request.query_options.batch_size << "," << unique_requests.size() << "queryId:" << print_id(common_request.params.query_id);
 
     if (unique_requests.empty()) {
         return Status::OK();

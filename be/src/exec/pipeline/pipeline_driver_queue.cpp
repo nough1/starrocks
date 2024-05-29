@@ -233,9 +233,14 @@ StatusOr<DriverRawPtr> WorkGroupDriverQueue::take() {
         } else if (wg_entity = _take_next_wg(); wg_entity == nullptr) {
             int64_t cur_ns = MonotonicNanos();
             int64_t sleep_ns = _bandwidth_control_period_end_ns - cur_ns;
+
             if (sleep_ns <= 0) {
                 continue;
             }
+            
+            LOG(WARNING) << "cur_ns " << cur_ns << ",sleep_ns:" << sleep_ns
+                         << ",_bandwidth_control_period_end_ns:"
+                         << _bandwidth_control_period_end_ns ;
 
             // All the ready tasks are throttled, so wait until the new period or a new task comes.
             _cv.wait_for(lock, std::chrono::nanoseconds(sleep_ns));
