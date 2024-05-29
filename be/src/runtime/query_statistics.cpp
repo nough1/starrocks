@@ -20,6 +20,7 @@
 // under the License.
 
 #include "runtime/query_statistics.h"
+#include "util/stack_util.h"
 
 namespace starrocks {
 
@@ -127,6 +128,8 @@ void QueryStatistics::merge(int sender_id, QueryStatistics& other) {
 }
 
 void QueryStatistics::merge_pb(const PQueryStatistics& statistics) {
+
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     if (statistics.has_scan_rows()) {
         scan_rows += statistics.scan_rows();
     }
