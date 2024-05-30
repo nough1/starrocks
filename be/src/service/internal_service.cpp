@@ -23,6 +23,7 @@
 
 #include <atomic>
 
+#include "util/stack_util.h"
 #include "brpc/errno.pb.h"
 #include "common/closure_guard.h"
 #include "common/config.h"
@@ -67,7 +68,9 @@ void PInternalServiceImplBase<T>::transmit_data(google::protobuf::RpcController*
                                                 google::protobuf::Closure* done) {
     VLOG_ROW << "Transmit data: fragment_instance_id = " << print_id(request->finst_id())
              << " node = " << request->node_id();
-    auto* cntl = static_cast<brpc::Controller*>(cntl_base);
+    LOG(WARNING) << "debugInfo:Transmit data: fragment_instance_id = " << print_id(request->finst_id())
+                 << " node = " << request->node_id() << get_stack_trace();
+                 auto* cntl = static_cast<brpc::Controller*>(cntl_base);
     if (cntl->request_attachment().size() > 0) {
         PRowBatch* batch = (const_cast<PTransmitDataParams*>(request))->mutable_row_batch();
         butil::IOBuf& io_buf = cntl->request_attachment();
@@ -95,6 +98,7 @@ template <typename T>
 void PInternalServiceImplBase<T>::transmit_chunk(google::protobuf::RpcController* cntl_base,
                                                  const PTransmitChunkParams* request, PTransmitChunkResult* response,
                                                  google::protobuf::Closure* done) {
+
     class WrapClosure : public google::protobuf::Closure {
     public:
         WrapClosure(google::protobuf::Closure* done, PTransmitChunkResult* response)
@@ -115,6 +119,8 @@ void PInternalServiceImplBase<T>::transmit_chunk(google::protobuf::RpcController
         const int64_t _receive_timestamp = MonotonicNanos();
     };
     google::protobuf::Closure* wrapped_done = new WrapClosure(done, response);
+    LOG(WARNING) << "debugInfo:transmit_chunk" << (uint64_t)(request) << " fragment_instance_id=" << print_id(request->finst_id())
+                                        << " node=" << request->node_id() << " begin" << get_stack_trace() ;
     VLOG_ROW << "transmit data: " << (uint64_t)(request) << " fragment_instance_id=" << print_id(request->finst_id())
              << " node=" << request->node_id() << " begin";
     // NOTE: we should give a default value to response to avoid concurrent risk

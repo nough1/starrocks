@@ -21,9 +21,11 @@
 
 #pragma once
 
+
 #include <memory>
 #include <mutex>
 
+#include "runtime/query_statistics.h"
 #include "common/statusor.h"
 #include "gen_cpp/Types_types.h" // TNetworkAddress
 #include "gen_cpp/doris_internal_service.pb.h"
@@ -32,6 +34,7 @@
 #include "util/network_util.h"
 #include "util/spinlock.h"
 #include "util/starrocks_metrics.h"
+#include "stack_util.h"
 
 namespace starrocks {
 
@@ -52,6 +55,8 @@ public:
     }
 
     doris::PBackendService_Stub* get_stub(const butil::EndPoint& endpoint) {
+
+        LOG(WARNING) << "debugInfo:get_stub" << endpoint << "," << get_stack_trace();
         std::lock_guard<SpinLock> l(_lock);
         auto stub_ptr = _stub_map.seek(endpoint);
         if (stub_ptr != nullptr) {
