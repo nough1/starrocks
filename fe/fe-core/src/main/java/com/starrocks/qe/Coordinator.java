@@ -949,7 +949,7 @@ public class Coordinator {
                             mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
                             String paramStr = mapper.writeValueAsString(pair.first);
                             String resultStr = mapper.writeValueAsString(result);
-                            LOG.info("call be param:{},res:{}", paramStr, resultStr);
+                            //LOG.info("call be param:{},res:{}", paramStr, resultStr);
                         } catch (ExecutionException e) {
                             LOG.warn("catch a execute exception", e);
                             code = TStatusCode.THRIFT_RPC_ERROR;
@@ -1263,7 +1263,7 @@ public class Coordinator {
                             mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
                             String paramStr = mapper.writeValueAsString(pair.first);
                             String resultStr = mapper.writeValueAsString(result);
-                            LOG.info("call be param:{},res:{}", paramStr, resultStr);
+                            //LOG.info("call be param:{},res:{}", paramStr, resultStr);
                             if (result.status.errorMsgs != null && !result.status.errorMsgs.isEmpty()) {
                                 errMsg = result.status.errorMsgs.get(0);
                             }

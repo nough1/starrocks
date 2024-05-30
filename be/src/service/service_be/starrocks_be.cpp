@@ -49,11 +49,11 @@ void start_be() {
     brpc::FLAGS_max_body_size = starrocks::config::brpc_max_body_size;
     brpc::FLAGS_socket_max_unwritten_bytes = starrocks::config::brpc_socket_max_unwritten_bytes;
     brpc::Server brpc_server;
-
     starrocks::BackendInternalServiceImpl<starrocks::PInternalService> internal_service(exec_env);
     starrocks::BackendInternalServiceImpl<doris::PBackendService> backend_service(exec_env);
     starrocks::LakeServiceImpl lake_service(exec_env);
 
+    FLAGS_v = 3;
     brpc_server.AddService(&internal_service, brpc::SERVER_DOESNT_OWN_SERVICE);
     brpc_server.AddService(&backend_service, brpc::SERVER_DOESNT_OWN_SERVICE);
     brpc_server.AddService(&lake_service, brpc::SERVER_DOESNT_OWN_SERVICE);
