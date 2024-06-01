@@ -14,7 +14,7 @@ do
 	    sh /root/starrocks/notice.sh
 	      /root/starrocks/output/fe/bin/stop_fe.sh
             /root/starrocks/output/be/bin/stop_be.sh
-	    cp /root/sr-config/be.conf /root/starrocks/output/be/conf/
+	    cp /root/starrocks/be.conf /root/starrocks/output/be/conf/
 
 	    /root/starrocks/output/fe/bin/start_fe.sh --daemon --debug
 	    /root/starrocks/output/be/bin/start_be.sh --daemon
