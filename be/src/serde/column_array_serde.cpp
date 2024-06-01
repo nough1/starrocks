@@ -26,6 +26,7 @@
 #include "util/coding.h"
 #include "util/json.h"
 #include "util/percentile_value.h"
+#include "util/stack_util.h"
 
 namespace starrocks::serde {
 namespace {
@@ -150,6 +151,7 @@ public:
 
     static uint8_t* serialize(const vectorized::FixedLengthColumnBase<T>& column, uint8_t* buff,
                               const int encode_level) {
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         uint32_t size = sizeof(T) * column.size();
         buff = write_little_endian_32(size, buff);
         if (EncodeContext::enable_encode_integer(encode_level) && size >= ENCODE_SIZE_LIMIT) {
@@ -166,6 +168,7 @@ public:
 
     static const uint8_t* deserialize(const uint8_t* buff, vectorized::FixedLengthColumnBase<T>* column,
                                       const int encode_level) {
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         uint32_t size = 0;
         buff = read_little_endian_32(buff, &size);
         std::vector<T>& data = column->get_data();
@@ -207,6 +210,8 @@ public:
 
     template <typename T>
     static uint8_t* serialize(const vectorized::BinaryColumnBase<T>& column, uint8_t* buff, const int encode_level) {
+
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         const auto& bytes = column.get_bytes();
         const auto& offsets = column.get_offset();
 
@@ -244,6 +249,7 @@ public:
     template <typename T>
     static const uint8_t* deserialize(const uint8_t* buff, vectorized::BinaryColumnBase<T>* column,
                                       const int encode_level) {
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         T bytes_size = 0;
         if constexpr (std::is_same_v<T, uint32_t>) {
             buff = read_little_endian_32(buff, &bytes_size);
@@ -291,6 +297,8 @@ public:
     }
 
     static uint8_t* serialize(const vectorized::ObjectColumn<T>& column, uint8_t* buff) {
+
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         buff = write_little_endian_32(column.get_pool().size(), buff);
         for (const auto& obj : column.get_pool()) {
             uint64_t actual = obj.serialize(buff + sizeof(uint64_t));
@@ -301,6 +309,8 @@ public:
     }
 
     static const uint8_t* deserialize(const uint8_t* buff, vectorized::ObjectColumn<T>* column) {
+
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         uint32_t num_objects = 0;
         buff = read_little_endian_32(buff, &num_objects);
         column->reset_column();
@@ -338,6 +348,7 @@ public:
     // uint32: number of datums
     // datums: [size1[payload1][size2][payload2]
     static uint8_t* serialize(const vectorized::JsonColumn& column, uint8_t* buff) {
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         buff = write_little_endian_32(kJsonMetaDefaultFormatVersion, buff);
         buff = write_little_endian_32(column.get_pool().size(), buff);
         for (const auto& obj : column.get_pool()) {
@@ -350,6 +361,7 @@ public:
     }
 
     static const uint8_t* deserialize(const uint8_t* buff, vectorized::JsonColumn* column) {
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         uint32_t actual_version = 0;
         uint32_t num_objects = 0;
         buff = read_little_endian_32(buff, &actual_version);
@@ -444,6 +456,7 @@ public:
     }
 
     static uint8_t* serialize(const vectorized::StructColumn& column, uint8_t* buff, const int encode_level) {
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         for (const auto& field : column.fields()) {
             buff = serde::ColumnArraySerde::serialize(*field, buff, false, encode_level);
         }
@@ -451,6 +464,7 @@ public:
     }
 
     static const uint8_t* deserialize(const uint8_t* buff, vectorized::StructColumn* column, const int encode_level) {
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         for (const auto& field : column->fields_column()) {
             buff = serde::ColumnArraySerde::deserialize(buff, field.get(), false, encode_level);
         }
@@ -466,12 +480,14 @@ public:
     }
 
     static uint8_t* serialize(const vectorized::ConstColumn& column, uint8_t* buff, const int encode_level) {
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         buff = write_little_endian_64(column.size(), buff);
         buff = serde::ColumnArraySerde::serialize(*column.data_column(), buff, false, encode_level);
         return buff;
     }
 
     static const uint8_t* deserialize(const uint8_t* buff, vectorized::ConstColumn* column, const int encode_level) {
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         uint64_t size = 0;
         buff = read_little_endian_64(buff, &size);
         buff = serde::ColumnArraySerde::deserialize(buff, column->data_column().get(), false, encode_level);
@@ -691,6 +707,7 @@ int64_t ColumnArraySerde::max_serialized_size(const vectorized::Column& column, 
 
 uint8_t* ColumnArraySerde::serialize(const vectorized::Column& column, uint8_t* buff, bool sorted,
                                      const int encode_level) {
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     ColumnSerializingVisitor visitor(buff, sorted, encode_level);
     auto st = column.accept(&visitor);
     LOG_IF(WARNING, !st.ok()) << st;
@@ -699,6 +716,7 @@ uint8_t* ColumnArraySerde::serialize(const vectorized::Column& column, uint8_t* 
 
 const uint8_t* ColumnArraySerde::deserialize(const uint8_t* data, vectorized::Column* column, bool sorted,
                                              const int encode_level) {
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     ColumnDeserializingVisitor visitor(data, sorted, encode_level);
     auto st = column->accept_mutable(&visitor);
     LOG_IF(WARNING, !st.ok()) << st;

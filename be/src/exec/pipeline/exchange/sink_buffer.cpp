@@ -441,8 +441,12 @@ Status SinkBuffer::_send_rpc(DisposableClosure<PTransmitChunkResult, ClosureCont
     } else {
         closure->cntl.request_attachment().append(request.attachment);
         request.brpc_stub->transmit_chunk(&closure->cntl, request.params.get(), &closure->result, closure);
-        LOG(WARNING) << "debugInfo brpc called method: " << closure->cntl.remote_side()  // 打印方法名
-                     << ", from service: " << request.brpc_addr  // 打印接口名
+        LOG(WARNING) << "debugInfo brpc called method: " << closure->cntl.remote_side()
+                << request.brpc_stub->descriptor()->full_name() << ","
+                << request.brpc_stub->descriptor()->DebugString() << ","
+                << request.brpc_stub->descriptor()->method_count()
+                << request.brpc_stub->descriptor()->method(0)->DebugString()
+                << ", from service: " << request.brpc_addr  // 打印接口名
                      << "," << print_id(request.fragment_instance_id)
                     ;
     }

@@ -18,6 +18,7 @@
 #include "simd/simd.h"
 #include "util/debug_util.h"
 #include "util/runtime_profile.h"
+#include "util/stack_util.h"
 
 namespace starrocks::vectorized {
 
@@ -310,6 +311,7 @@ bool HashJoiner::_has_null(const ColumnPtr& column) {
 }
 
 Status HashJoiner::_build(RuntimeState* state) {
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     SCOPED_TIMER(_build_ht_timer);
     TRY_CATCH_BAD_ALLOC(RETURN_IF_ERROR(_ht.build(state)));
     return Status::OK();

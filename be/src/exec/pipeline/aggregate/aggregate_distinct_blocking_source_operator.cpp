@@ -26,6 +26,7 @@ void AggregateDistinctBlockingSourceOperator::close(RuntimeState* state) {
 StatusOr<vectorized::ChunkPtr> AggregateDistinctBlockingSourceOperator::pull_chunk(RuntimeState* state) {
     RETURN_IF_CANCELLED(state);
 
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     int32_t chunk_size = state->chunk_size();
     vectorized::ChunkPtr chunk = std::make_shared<vectorized::Chunk>();
     _aggregator->convert_hash_set_to_chunk(chunk_size, &chunk);

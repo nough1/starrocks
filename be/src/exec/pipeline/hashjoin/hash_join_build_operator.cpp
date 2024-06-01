@@ -50,6 +50,8 @@ StatusOr<vectorized::ChunkPtr> HashJoinBuildOperator::pull_chunk(RuntimeState* s
 }
 
 Status HashJoinBuildOperator::set_finishing(RuntimeState* state) {
+
+    LOG(WARNING) << "debugInfo:" << get_stack_trace() << "," << state;
     _is_finished = true;
     RETURN_IF_ERROR(_join_builder->build_ht(state));
 

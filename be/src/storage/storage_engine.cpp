@@ -884,6 +884,8 @@ Status StorageEngine::_perform_base_compaction(DataDir* data_dir, std::pair<int3
 }
 
 Status StorageEngine::_perform_update_compaction(DataDir* data_dir) {
+
+    LOG(WARNING) << "debugInfo:" << data_dir << "," << get_stack_trace();
     scoped_refptr<Trace> trace(new Trace);
     MonotonicStopWatch watch;
     watch.start();

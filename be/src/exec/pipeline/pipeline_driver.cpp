@@ -346,6 +346,7 @@ StatusOr<DriverState> PipelineDriver::process(RuntimeState* runtime_state, int w
         // give chance for another ready driver to run.
         if (num_chunks_moved == 0 || should_yield) {
             if (is_precondition_block()) {
+                LOG(WARNING) << "debugInfo:" << ",is_precondition_block" << get_stack_trace();
                 set_driver_state(DriverState::PRECONDITION_BLOCK);
                 COUNTER_UPDATE(_block_by_precondition_counter, 1);
             } else if (!sink_operator()->is_finished() && !sink_operator()->need_input()) {
@@ -577,6 +578,8 @@ bool PipelineDriver::_check_fragment_is_canceled(RuntimeState* runtime_state) {
 }
 
 Status PipelineDriver::_mark_operator_finishing(OperatorPtr& op, RuntimeState* state) {
+
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     auto& op_state = _operator_stages[op->get_id()];
     if (op_state >= OperatorStage::FINISHING) {
         return Status::OK();

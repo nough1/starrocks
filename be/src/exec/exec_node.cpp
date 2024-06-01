@@ -185,7 +185,7 @@ void ExecNode::init_runtime_filter_for_operator(OperatorFactory* op, pipeline::P
 }
 
 Status ExecNode::init(const TPlanNode& tnode, RuntimeState* state) {
-    VLOG(2) << "ExecNode init:\n" << apache::thrift::ThriftDebugString(tnode);
+    //VLOG(2) << "ExecNode init:\n" << apache::thrift::ThriftDebugString(tnode);
     _runtime_state = state;
     RETURN_IF_ERROR(Expr::create_expr_trees(_pool, tnode.conjuncts, &_conjunct_ctxs));
     RETURN_IF_ERROR(init_join_runtime_filters(tnode, state));

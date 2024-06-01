@@ -150,12 +150,14 @@ void PipelineDriverPoller::add_blocked_driver(const DriverRawPtr driver) {
     _blocked_drivers.push_back(driver);
     driver->_pending_timer_sw->reset();
     LOG(INFO) << "add blocked driver :" << driver;
+    LOG(WARNING) << "debugInfo:" << "," << get_stack_trace();
     _cond.notify_one();
 }
 
 void PipelineDriverPoller::remove_blocked_driver(DriverList& local_blocked_drivers, DriverList::iterator& driver_it) {
     auto& driver = *driver_it;
     LOG(INFO) << "remove blocked driver :" << driver;
+    LOG(WARNING) << "debugInfo:" << "," << get_stack_trace();
     driver->_pending_timer->update(driver->_pending_timer_sw->elapsed_time());
     local_blocked_drivers.erase(driver_it++);
 }

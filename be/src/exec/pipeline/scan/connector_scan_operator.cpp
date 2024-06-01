@@ -238,6 +238,8 @@ connector::ConnectorType ConnectorScanOperator::connector_type() {
 }
 
 void ConnectorScanOperator::begin_driver_process() {
+
+    LOG(WARNING) << "debugInfo:" << "," << get_stack_trace();
     _adaptive_processor->in_driver_process = true;
     _unpluging = true;
 
@@ -250,6 +252,8 @@ void ConnectorScanOperator::begin_driver_process() {
 }
 
 void ConnectorScanOperator::end_driver_process(PipelineDriver* driver) {
+
+    LOG(WARNING) << "debugInfo:" << "," << get_stack_trace();
     _adaptive_processor->check_all_io_tasks_last_timestamp = 0;
     _adaptive_processor->in_driver_process = false;
     _unpluging = false;

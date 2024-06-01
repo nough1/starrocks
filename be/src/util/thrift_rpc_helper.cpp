@@ -31,6 +31,7 @@
 #include "runtime/runtime_state.h"
 #include "util/network_util.h"
 #include "util/thrift_util.h"
+#include "stack_util.h"
 
 namespace starrocks {
 
@@ -49,6 +50,7 @@ void ThriftRpcHelper::setup(ExecEnv* exec_env) {
 template <typename T>
 Status ThriftRpcHelper::rpc(const std::string& ip, const int32_t port,
                             std::function<void(ClientConnection<T>&)> callback, int timeout_ms) {
+    LOG(WARNING) << "debugInfo:thrift rpc" << get_stack_trace();
     TNetworkAddress address = make_network_address(ip, port);
     Status status;
     ClientConnection<T> client(_s_exec_env->get_client_cache<T>(), address, timeout_ms, &status);

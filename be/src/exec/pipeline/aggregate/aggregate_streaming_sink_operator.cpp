@@ -6,6 +6,8 @@
 
 #include "runtime/current_thread.h"
 #include "simd/simd.h"
+#include "util/stack_util.h"
+
 namespace starrocks::pipeline {
 
 Status AggregateStreamingSinkOperator::prepare(RuntimeState* state) {
@@ -35,6 +37,8 @@ StatusOr<vectorized::ChunkPtr> AggregateStreamingSinkOperator::pull_chunk(Runtim
 }
 
 Status AggregateStreamingSinkOperator::push_chunk(RuntimeState* state, const vectorized::ChunkPtr& chunk) {
+
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     size_t chunk_size = chunk->num_rows();
     _aggregator->update_num_input_rows(chunk_size);
     COUNTER_SET(_aggregator->input_row_count(), _aggregator->num_input_rows());
