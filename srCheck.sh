@@ -15,6 +15,7 @@ do
 	      /root/starrocks/output/fe/bin/stop_fe.sh
             /root/starrocks/output/be/bin/stop_be.sh
 	    cp /root/starrocks/be.conf /root/starrocks/output/be/conf/
+	    cp /root/starrocks/fe.conf /root/starrocks/output/fe/conf/
 
 	    mkdir -p /data/service/starrocks/fe/
 		mkdir -p /data/service/starrocks/be/
