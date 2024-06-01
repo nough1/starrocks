@@ -15,6 +15,8 @@ do
 	    /root/starrocks/output/fe/bin/stop_fe.sh
 	    /root/starrocks/output/be/bin/stop_be.sh
             cp /root/starrocks/fe.conf /root/starrocks/output/fe/conf/
+	    mkdir -p /data/service/starrocks/fe/
+	    mkdir -p /data/service/starrocks/be/
 	    echo "start fe" >> /tmp/check.log
             /root/starrocks/output/fe/bin/start_fe.sh --daemon --debug
 	    echo "start be" >> /tmp/check.log

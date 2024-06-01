@@ -16,6 +16,8 @@ do
             /root/starrocks/output/be/bin/stop_be.sh
 	    cp /root/starrocks/be.conf /root/starrocks/output/be/conf/
 
+	    mkdir -p /data/service/starrocks/fe/
+		mkdir -p /data/service/starrocks/be/
 	    /root/starrocks/output/fe/bin/start_fe.sh --daemon --debug
 	    /root/starrocks/output/be/bin/start_be.sh --daemon
 	    break
