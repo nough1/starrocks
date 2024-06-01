@@ -26,6 +26,7 @@ namespace starrocks {
 
 void QueryStatistics::to_pb(PQueryStatistics* statistics) {
     DCHECK(statistics != nullptr);
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     statistics->set_scan_rows(scan_rows);
     statistics->set_scan_bytes(scan_bytes);
     statistics->set_returned_rows(returned_rows);

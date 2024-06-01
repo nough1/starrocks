@@ -9,6 +9,7 @@
 #include "runtime/global_dict/types.h"
 #include "storage/row_source_mask.h"
 #include "util/runtime_profile.h"
+#include "util/stack_util.h"
 
 namespace starrocks {
 class Status;
@@ -37,6 +38,7 @@ public:
     // if the returned status is `EndOfFile`, size of |chunk| must be zero;
     // otherwise, the size of |chunk| is undefined.
     Status get_next(Chunk* chunk) {
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         Status st = do_get_next(chunk);
         DCHECK_CHUNK(chunk);
         return st;

@@ -246,6 +246,8 @@ void SinkBuffer::_try_to_merge_query_statistics(TransmitChunkInfo& request) {
 }
 
 Status SinkBuffer::_try_to_send_rpc(const TUniqueId& instance_id, const std::function<void()>& pre_works) {
+
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     std::lock_guard<Mutex> l(*_mutexes[instance_id.lo]);
     pre_works();
 
@@ -407,7 +409,9 @@ Status SinkBuffer::_try_to_send_rpc(const TUniqueId& instance_id, const std::fun
 
 Status SinkBuffer::_send_rpc(DisposableClosure<PTransmitChunkResult, ClosureContext>* closure,
                              const TransmitChunkInfo& request) {
+
     auto expected_iobuf_size = request.attachment.size() + request.params->ByteSizeLong() + sizeof(size_t) * 2;
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     if (UNLIKELY(expected_iobuf_size > _rpc_http_min_size)) {
         butil::IOBuf iobuf;
         butil::IOBufAsZeroCopyOutputStream wrapper(&iobuf);
@@ -437,7 +441,12 @@ Status SinkBuffer::_send_rpc(DisposableClosure<PTransmitChunkResult, ClosureCont
     } else {
         closure->cntl.request_attachment().append(request.attachment);
         request.brpc_stub->transmit_chunk(&closure->cntl, request.params.get(), &closure->result, closure);
+        LOG(WARNING) << "debugInfo brpc called method: " << closure->cntl.remote_side()  // 打印方法名
+                     << ", from service: " << request.brpc_addr  // 打印接口名
+                     << "," << print_id(request.fragment_instance_id)
+                    ;
     }
+
     return Status::OK();
 }
 

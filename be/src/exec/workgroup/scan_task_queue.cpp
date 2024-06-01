@@ -5,6 +5,7 @@
 #include "common/status.h"
 #include "exec/workgroup/work_group.h"
 #include "exec/workgroup/work_group_fwd.h"
+#include "util/stack_util.h"
 
 namespace starrocks::workgroup {
 
@@ -100,7 +101,8 @@ bool WorkGroupScanTaskQueue::try_offer(ScanTask task) {
 
 void WorkGroupScanTaskQueue::update_statistics(WorkGroup* wg, int64_t runtime_ns) {
     std::lock_guard<std::mutex> lock(_global_mutex);
-
+    LOG(WARNING) << "update_statistics" << wg << " runtime_ns:" << runtime_ns
+                 << get_stack_trace();
     auto* wg_entity = _sched_entity(wg);
 
     // Update bandwidth control information.
@@ -123,6 +125,8 @@ void WorkGroupScanTaskQueue::update_statistics(WorkGroup* wg, int64_t runtime_ns
 }
 
 bool WorkGroupScanTaskQueue::should_yield(const WorkGroup* wg, int64_t unaccounted_runtime_ns) const {
+
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     if (_throttled(_sched_entity(wg), unaccounted_runtime_ns)) {
         return true;
     }
@@ -130,6 +134,7 @@ bool WorkGroupScanTaskQueue::should_yield(const WorkGroup* wg, int64_t unaccount
     // Return true, if the minimum-vruntime workgroup is not current workgroup anymore.
     auto* wg_entity = _sched_entity(wg);
     auto* min_entity = _min_wg_entity.load();
+
     return min_entity != wg_entity && min_entity &&
            min_entity->vruntime_ns() < wg_entity->vruntime_ns() + unaccounted_runtime_ns / wg_entity->cpu_limit();
 }
