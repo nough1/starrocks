@@ -29,6 +29,7 @@ namespace starrocks {
 Status ThriftClientImpl::open() {
     try {
         LOG(WARNING) << "debugInfo:" << get_stack_trace();
+
         if (!_transport->isOpen()) {
             _transport->open();
         }
