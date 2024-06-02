@@ -31,6 +31,7 @@
 #include "util/hash_util.hpp"
 #include "util/monotime.h"
 #include "util/thrift_server.h"
+#include "stack_util.h"
 
 // TCompactProtocol requires some #defines to work right.  They also define UNLIKLEY
 // so we need to undef this.
@@ -82,6 +83,7 @@ bool TNetworkAddress::operator<(const TNetworkAddress& that) const {
 };
 
 static void thrift_output_function(const char* output) {
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     VLOG_QUERY << output;
 }
 

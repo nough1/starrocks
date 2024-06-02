@@ -883,7 +883,7 @@ Status TabletManager::report_tablet_info(TTabletInfo* tablet_info) {
 
 Status TabletManager::report_all_tablets_info(std::map<TTabletId, TTablet>* tablets_info) {
     DCHECK(tablets_info != nullptr);
-
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     // build the expired txn map first, outside the tablet map lock
     std::map<TabletInfo, std::vector<int64_t>> expire_txn_map;
     StorageEngine::instance()->txn_manager()->build_expire_txn_map(&expire_txn_map);

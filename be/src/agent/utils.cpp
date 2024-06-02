@@ -25,6 +25,7 @@
 
 #include "agent/master_info.h"
 #include "common/status.h"
+#include "util/stack_util.h"
 
 using std::map;
 using std::string;
@@ -41,7 +42,7 @@ AgentStatus MasterServerClient::finish_task(const TFinishTaskRequest& request, T
     Status client_status;
     TNetworkAddress network_address = get_master_address();
     FrontendServiceConnection client(_client_cache, network_address, config::thrift_rpc_timeout_ms, &client_status);
-
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     if (!client_status.ok()) {
         LOG(WARNING) << "Fail to get master client from cache. "
                      << "host=" << network_address.hostname << ", port=" << network_address.port
@@ -74,6 +75,8 @@ AgentStatus MasterServerClient::finish_task(const TFinishTaskRequest& request, T
 }
 
 AgentStatus MasterServerClient::report(const TReportRequest& request, TMasterResult* result) {
+
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     Status client_status;
     TNetworkAddress network_address = get_master_address();
     FrontendServiceConnection client(_client_cache, network_address, config::thrift_rpc_timeout_ms, &client_status);
