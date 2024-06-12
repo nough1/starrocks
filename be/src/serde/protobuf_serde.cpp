@@ -92,7 +92,7 @@ int64_t ProtobufChunkSerde::max_serialized_size(const vectorized::Chunk& chunk,
 StatusOr<ChunkPB> ProtobufChunkSerde::serialize(const vectorized::Chunk& chunk,
                                                 const std::shared_ptr<EncodeContext>& context) {
 
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     StatusOr<ChunkPB> res = serialize_without_meta(chunk, std::move(context));
     if (!res.ok()) return res.status();
 
@@ -130,7 +130,7 @@ StatusOr<ChunkPB> ProtobufChunkSerde::serialize_without_meta(const vectorized::C
                                                              const std::shared_ptr<EncodeContext>& context) {
     ChunkPB chunk_pb;
     chunk_pb.set_compress_type(CompressionTypePB::NO_COMPRESSION);
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     std::string* serialized_data = chunk_pb.mutable_data();
     raw::stl_string_resize_uninitialized(serialized_data, ProtobufChunkSerde::max_serialized_size(chunk, context));
     auto* buff = reinterpret_cast<uint8_t*>(serialized_data->data());
@@ -169,7 +169,7 @@ StatusOr<ChunkPB> ProtobufChunkSerde::serialize_without_meta(const vectorized::C
 
 StatusOr<vectorized::Chunk> ProtobufChunkSerde::deserialize(const RowDescriptor& row_desc, const ChunkPB& chunk_pb,
                                                             const int encode_level) {
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     auto res = build_protobuf_chunk_meta(row_desc, chunk_pb);
     if (!res.ok()) {
         return res.status();
@@ -217,7 +217,7 @@ static SlotId get_slot_id_by_index(const vectorized::Chunk::SlotHashMap& slot_id
 
 StatusOr<vectorized::Chunk> ProtobufChunkDeserializer::deserialize(std::string_view buff, int64_t* deserialized_bytes) {
 
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     using ColumnHelper = vectorized::ColumnHelper;
     using Chunk = vectorized::Chunk;
 

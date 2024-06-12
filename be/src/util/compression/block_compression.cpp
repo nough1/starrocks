@@ -202,7 +202,7 @@ public:
                     faststring* compressed_body1, raw::RawString* compressed_body2) const override {
         std::vector<Slice> orig_slices;
         orig_slices.emplace_back(input);
-        LOG(WARNING) << "debugInfo:" << get_stack_trace();
+        //LOG(WARNING) << "debugInfo:" << get_stack_trace();
         RETURN_IF_ERROR(compress(orig_slices, output, use_compression_buffer, uncompressed_size, compressed_body1,
                                  compressed_body2));
         return Status::OK();

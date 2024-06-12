@@ -326,7 +326,7 @@ Status OlapChunkSource::_init_global_dicts(vectorized::TabletReaderParams* param
 
 Status OlapChunkSource::_read_chunk_from_storage(RuntimeState* state, vectorized::Chunk* chunk) {
 
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     if (state->is_cancelled()) {
         return Status::Cancelled("canceled state");
     }

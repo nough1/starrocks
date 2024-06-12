@@ -579,7 +579,7 @@ bool PipelineDriver::_check_fragment_is_canceled(RuntimeState* runtime_state) {
 
 Status PipelineDriver::_mark_operator_finishing(OperatorPtr& op, RuntimeState* state) {
 
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     auto& op_state = _operator_stages[op->get_id()];
     if (op_state >= OperatorStage::FINISHING) {
         return Status::OK();

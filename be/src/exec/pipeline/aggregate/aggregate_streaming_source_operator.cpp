@@ -44,7 +44,7 @@ void AggregateStreamingSourceOperator::close(RuntimeState* state) {
 }
 
 StatusOr<vectorized::ChunkPtr> AggregateStreamingSourceOperator::pull_chunk(RuntimeState* state) {
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     // It is no need to distinguish whether streaming or aggregation mode
     // We just first read chunk from buffer and finally read chunk from hash table
     if (!_aggregator->is_chunk_buffer_empty()) {

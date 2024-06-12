@@ -44,7 +44,7 @@ StatusOr<vectorized::ChunkPtr> AggregateDistinctBlockingSinkOperator::pull_chunk
 }
 
 Status AggregateDistinctBlockingSinkOperator::push_chunk(RuntimeState* state, const vectorized::ChunkPtr& chunk) {
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     DCHECK_LE(chunk->num_rows(), state->chunk_size());
     RETURN_IF_ERROR(_aggregator->evaluate_exprs(chunk.get()));
 

@@ -594,7 +594,7 @@ public class ConnectContext {
     }
 
     // kill operation with no protect.
-    public void kill(boolean killConnection) {
+    public void  kill(boolean killConnection) {
         LOG.warn("kill query, {}, kill connection: {}",
                 getMysqlChannel().getRemoteHostPortString(), killConnection);
         // Now, cancel running process.

@@ -62,7 +62,7 @@ namespace starrocks {
 volatile uint32_t g_schema_change_active_threads = 0;
 
 Status StorageEngine::start_bg_threads() {
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     _update_cache_expire_thread = std::thread([this] { _update_cache_expire_thread_callback(nullptr); });
     Thread::set_thread_name(_update_cache_expire_thread, "cache_expire");
 

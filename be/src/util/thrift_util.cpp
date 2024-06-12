@@ -83,7 +83,7 @@ bool TNetworkAddress::operator<(const TNetworkAddress& that) const {
 };
 
 static void thrift_output_function(const char* output) {
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     VLOG_QUERY << output;
 }
 

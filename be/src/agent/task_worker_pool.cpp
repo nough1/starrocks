@@ -725,7 +725,7 @@ void* ReportResourceUsageTaskWorkerPool::_worker_thread_callback(void* arg_this)
 
     TReportRequest request;
     AgentStatus status = STARROCKS_SUCCESS;
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     while ((!worker_pool_this->_stopped)) {
         auto master_address = get_master_address();
         if (master_address.port == 0) {

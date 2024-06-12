@@ -76,7 +76,7 @@ AgentStatus MasterServerClient::finish_task(const TFinishTaskRequest& request, T
 
 AgentStatus MasterServerClient::report(const TReportRequest& request, TMasterResult* result) {
 
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     Status client_status;
     TNetworkAddress network_address = get_master_address();
     FrontendServiceConnection client(_client_cache, network_address, config::thrift_rpc_timeout_ms, &client_status);

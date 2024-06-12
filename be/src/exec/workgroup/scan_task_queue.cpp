@@ -126,7 +126,7 @@ void WorkGroupScanTaskQueue::update_statistics(WorkGroup* wg, int64_t runtime_ns
 
 bool WorkGroupScanTaskQueue::should_yield(const WorkGroup* wg, int64_t unaccounted_runtime_ns) const {
 
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     if (_throttled(_sched_entity(wg), unaccounted_runtime_ns)) {
         return true;
     }

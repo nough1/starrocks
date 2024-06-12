@@ -23,12 +23,12 @@ void ProjectOperator::close(RuntimeState* state) {
 }
 
 StatusOr<vectorized::ChunkPtr> ProjectOperator::pull_chunk(RuntimeState* state) {
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     return std::move(_cur_chunk);
 }
 
 Status ProjectOperator::push_chunk(RuntimeState* state, const vectorized::ChunkPtr& chunk) {
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     TRY_CATCH_ALLOC_SCOPE_START();
     {
         SCOPED_TIMER(_common_sub_expr_compute_timer);

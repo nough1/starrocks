@@ -49,6 +49,17 @@ std::string get_stack_trace() {
     return s;
 }
 
+std::string get_stack_trace(int printFlag) {
+
+         std::string s;
+        if(printFlag==0){
+            return s;
+        }
+
+        google::glog_internal_namespace_::DumpStackTraceToString(&s);
+        return s;
+}
+
 struct StackTraceTask {
     static constexpr int kMaxStackDepth = 64;
     void* addrs[kMaxStackDepth];

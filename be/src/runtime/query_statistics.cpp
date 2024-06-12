@@ -26,7 +26,7 @@ namespace starrocks {
 
 void QueryStatistics::to_pb(PQueryStatistics* statistics) {
     DCHECK(statistics != nullptr);
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     statistics->set_scan_rows(scan_rows);
     statistics->set_scan_bytes(scan_bytes);
     statistics->set_returned_rows(returned_rows);
@@ -130,7 +130,7 @@ void QueryStatistics::merge(int sender_id, QueryStatistics& other) {
 
 void QueryStatistics::merge_pb(const PQueryStatistics& statistics) {
 
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     if (statistics.has_scan_rows()) {
         scan_rows += statistics.scan_rows();
     }

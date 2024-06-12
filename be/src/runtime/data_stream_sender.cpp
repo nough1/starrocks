@@ -278,7 +278,7 @@ Status DataStreamSender::Channel::send_chunk_request(PTransmitChunkParams* param
 
 Status DataStreamSender::Channel::_do_send_chunk_rpc(PTransmitChunkParams* request, const butil::IOBuf& attachment) {
     SCOPED_TIMER(_parent->_send_request_timer);
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     request->set_sequence(_request_seq);
     if (_is_transfer_chain && (_send_query_statistics_with_every_batch || request->eos())) {
         auto statistic = request->mutable_query_statistics();
@@ -679,7 +679,7 @@ Status DataStreamSender::close(RuntimeState* state, Status exec_status) {
 Status DataStreamSender::serialize_chunk(const vectorized::Chunk* src, ChunkPB* dst, bool* is_first_chunk,
                                          int num_receivers) {
     VLOG_ROW << "serializing " << src->num_rows() << " rows";
-    LOG(WARNING) << "debugInfo:" << get_stack_trace();
+    //LOG(WARNING) << "debugInfo:" << get_stack_trace();
     {
         SCOPED_TIMER(_serialize_chunk_timer);
         // We only serialize chunk meta for first chunk
