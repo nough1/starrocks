@@ -36,6 +36,7 @@
 #include "util/faststring.h"
 #include "util/runtime_profile.h"
 #include "util/scoped_cleanup.h"
+#include "util/stack_util.h"
 
 namespace starrocks {
 
@@ -108,6 +109,7 @@ Status PageIO::write_page(WritableFile* wfile, const std::vector<Slice>& body, c
     page.emplace_back(checksum_buf, sizeof(uint32_t));
 
     uint64_t offset = wfile->size();
+    LOG(WARNING) << "write_page debugInfo:" << wfile->filename() << ",stack:" << get_stack_trace();
     RETURN_IF_ERROR(wfile->appendv(&page[0], page.size()));
 
     result->offset = offset;
@@ -123,7 +125,7 @@ Status PageIO::read_and_decompress_page(const PageReadOptions& opts, PageHandle*
 
     opts.sanity_check();
     opts.stats->total_pages_num++;
-
+    LOG(WARNING) << "read_and_decompress_page debugInfo:" << opts.read_file->filename() << ",stack:" << get_stack_trace();
     auto cache = StoragePageCache::instance();
     PageCacheHandle cache_handle;
     StoragePageCache::CacheKey cache_key(opts.read_file->filename(), opts.page_pointer.offset);
