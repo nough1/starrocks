@@ -20,6 +20,7 @@
 #include <utility>
 
 #include "util/error_util.h"
+#include "util/stack_util.h"
 
 namespace starrocks {
 
@@ -31,6 +32,8 @@ LocalFileWriter::~LocalFileWriter() {
 }
 
 Status LocalFileWriter::open() {
+
+    LOG(WARNING) << "open debugInfo:" << ",stack:" << get_stack_trace();
     _fp = fopen(_path.c_str(), "w+");
     if (_fp == nullptr) {
         std::stringstream ss;
@@ -52,6 +55,8 @@ Status LocalFileWriter::open() {
 }
 
 Status LocalFileWriter::write(const uint8_t* buf, size_t buf_len, size_t* written_len) {
+
+    LOG(WARNING) << "write debugInfo:" << ",stack:" << get_stack_trace();
     size_t bytes_written = fwrite(buf, 1, buf_len, _fp);
     if (bytes_written < buf_len) {
         std::stringstream error_msg;
@@ -66,6 +71,8 @@ Status LocalFileWriter::write(const uint8_t* buf, size_t buf_len, size_t* writte
 }
 
 Status LocalFileWriter::close() {
+
+    LOG(WARNING) << "close debugInfo:" << ",stack:" << get_stack_trace();
     if (_fp != nullptr) {
         fclose(_fp);
         _fp = nullptr;
