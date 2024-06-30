@@ -9,6 +9,7 @@
 #include "fs/fs_util.h"
 #include "storage/rowset/segment_writer.h"
 #include "util/uid_util.h"
+#include "util/stack_util.h"
 
 namespace starrocks::lake {
 
@@ -23,6 +24,7 @@ Status GeneralTabletWriter::open() {
 }
 
 Status GeneralTabletWriter::write(const starrocks::vectorized::Chunk& data) {
+    LOG(WARNING) << "write debugInfo:" << ",stack:" << get_stack_trace();
     if (_seg_writer == nullptr || _seg_writer->estimate_segment_size() >= config::max_segment_file_size ||
         _seg_writer->num_rows_written() + data.num_rows() >= INT32_MAX /*TODO: configurable*/) {
         RETURN_IF_ERROR(flush_segment_writer());

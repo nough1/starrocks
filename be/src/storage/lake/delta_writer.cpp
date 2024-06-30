@@ -37,12 +37,15 @@ public:
     DISALLOW_COPY_AND_MOVE(TabletWriterSink);
 
     Status flush_chunk(const Chunk& chunk, starrocks::SegmentPB* segment = nullptr) override {
+
+        LOG(WARNING) << "flush_chunk debugInfo:" << ",stack:" << get_stack_trace();
         RETURN_IF_ERROR(_writer->write(chunk));
         return _writer->flush();
     }
 
     Status flush_chunk_with_deletes(const Chunk& /*upserts*/, const Column& /*deletes*/,
                                     starrocks::SegmentPB*) override {
+        LOG(WARNING) << "flush_chunk_with_deletes debugInfo:" << ",stack:" << get_stack_trace();
         return Status::NotSupported("TabletWriterSink::flush_chunk_with_deletes");
     }
 
@@ -175,7 +178,7 @@ Status DeltaWriterImpl::open() {
 
 Status DeltaWriterImpl::write(const Chunk& chunk, const uint32_t* indexes, uint32_t indexes_size) {
     SCOPED_THREAD_LOCAL_MEM_SETTER(_mem_tracker, false);
-
+    LOG(WARNING) << "write debugInfo:" << ",stack:" << get_stack_trace();
     if (_mem_table == nullptr) {
         RETURN_IF_ERROR(reset_memtable());
     }

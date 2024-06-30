@@ -74,6 +74,7 @@ Status PageIO::compress_page_body(const BlockCompressionCodec* codec, double min
 
 Status PageIO::write_page(WritableFile* wfile, const std::vector<Slice>& body, const PageFooterPB& footer,
                           PagePointer* result) {
+    LOG(WARNING) << "write_page debugInfo:" << wfile->filename() << ",stack:" << get_stack_trace();
     // sanity check of page footer
     CHECK(footer.has_type()) << "type must be set";
     CHECK(footer.has_uncompressed_size()) << "uncompressed_size must be set";

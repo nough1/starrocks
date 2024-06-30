@@ -436,6 +436,7 @@ Status HorizontalRowsetWriter::_flush_chunk(const vectorized::Chunk& chunk, Segm
     if (!segment_writer.ok()) {
         return segment_writer.status();
     }
+    LOG(WARNING) << "_flush_chunk debugInfo:" <<",stack:" << get_stack_trace();
     RETURN_IF_ERROR((*segment_writer)->append_chunk(chunk));
     {
         std::lock_guard<std::mutex> l(_lock);

@@ -252,6 +252,8 @@ Status MemTable::finalize() {
 }
 
 Status MemTable::flush(SegmentPB* seg_info) {
+
+    LOG(WARNING) << "flush debugInfo:" <<",stack:" << get_stack_trace();
     if (UNLIKELY(_result_chunk == nullptr)) {
         return Status::OK();
     }
