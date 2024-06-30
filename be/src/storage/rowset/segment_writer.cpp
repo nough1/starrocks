@@ -39,6 +39,7 @@
 #include "util/crc32c.h"
 #include "util/faststring.h"
 #include "util/json.h"
+#include "util/stack_util.h"
 
 namespace starrocks {
 
@@ -222,6 +223,7 @@ Status SegmentWriter::finalize(uint64_t* segment_file_size, uint64_t* index_size
 }
 
 Status SegmentWriter::finalize_columns(uint64_t* index_size) {
+    LOG(WARNING) << "finalize_columns debugInfo:" << ",stack:" << get_stack_trace();
     if (_has_key) {
         _num_rows = _num_rows_written;
     } else if (_num_rows != _num_rows_written) {

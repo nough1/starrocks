@@ -80,6 +80,8 @@ RowsetWriter::RowsetWriter(const RowsetWriterContext& context)
         : _context(context), _num_rows_written(0), _total_row_size(0), _total_data_size(0), _total_index_size(0) {}
 
 Status RowsetWriter::init() {
+
+    LOG(WARNING) << "init debugInfo:" << _context.rowset_path_prefix << ",stack:" << get_stack_trace();
     DCHECK(!(_context.tablet_schema->contains_format_v1_column() &&
              _context.tablet_schema->contains_format_v2_column()));
     // StarRocks has newly designed storage formats for DATA/DATETIME/DECIMAL for better performance.
