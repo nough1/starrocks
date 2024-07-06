@@ -56,7 +56,7 @@ public:
 
     doris::PBackendService_Stub* get_stub(const butil::EndPoint& endpoint) {
 
-        LOG(WARNING) << "debugInfo:get_stub" << endpoint << "," << get_stack_trace();
+        //LOG(WARNING) << "debugInfo:get_stub" << endpoint << "," << get_stack_trace();
         std::lock_guard<SpinLock> l(_lock);
         auto stub_ptr = _stub_map.seek(endpoint);
         if (stub_ptr != nullptr) {
