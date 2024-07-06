@@ -149,8 +149,8 @@ void PipelineDriverPoller::add_blocked_driver(const DriverRawPtr driver) {
     std::unique_lock<std::mutex> lock(_global_mutex);
     _blocked_drivers.push_back(driver);
     driver->_pending_timer_sw->reset();
-    LOG(INFO) << "add blocked driver :" << driver;
-    LOG(WARNING) << "debugInfo:" << "," << get_stack_trace();
+   // LOG(INFO) << "add blocked driver :" << driver;
+   // LOG(WARNING) << "debugInfo:" << "," << get_stack_trace();
     _cond.notify_one();
 }
 
