@@ -1493,6 +1493,7 @@ Status OlapTableSink::close_wait(RuntimeState* state, Status close_status) {
                << (pair.second.add_batch_wait_lock_time_us / 1000) << ")(" << pair.second.add_batch_num << ")} ";
         }
         _server_rpc_timer->update(total_server_rpc_time_us * 1000);
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         LOG(INFO) << ss.str();
     } else {
         COUNTER_SET(_input_rows_counter, _number_input_rows);
