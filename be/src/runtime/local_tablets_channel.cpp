@@ -397,7 +397,7 @@ void LocalTabletsChannel::_commit_tablets(const PTabletWriterAddChunkRequest& re
     JoinInts(commit_tablet_ids, ",", &commit_tablet_id_list_str);
     LOG(INFO) << "LocalTabletsChannel txn_id: " << _txn_id << " load_id: " << print_id(request.id()) << " commit "
               << commit_tablet_ids.size() << " tablets: " << commit_tablet_id_list_str;
-
+    LOG(WARNING) << "debugInfo:" << get_stack_trace();
     // abort seconary replicas located on other nodes which have no data
     _abort_replica_tablets(request, "", node_id_to_abort_tablets);
 }
@@ -512,6 +512,7 @@ Status LocalTabletsChannel::_open_all_writers(const PTabletWriterOpenRequest& pa
         for (auto& tablet_id : failed_tablet_ids) {
             ss << tablet_id << ",";
         }
+        LOG(WARNING) << "debugInfo:" << get_stack_trace();
         LOG(INFO) << ss.str();
     }
     return Status::OK();

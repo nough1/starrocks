@@ -31,6 +31,7 @@
 #include "io/fd_input_stream.h"
 #include "util/errno.h"
 #include "util/slice.h"
+#include "util/stack_util.h"
 
 namespace starrocks {
 
@@ -65,6 +66,7 @@ private:
 };
 
 inline bool enable_fd_cache(std::string_view path) {
+    LOG(WARNING) << "enable_fd_cache debugInfo:" << path << ",stack:" << get_stack_trace();
     // .dat is the suffix of segment file name
     return HasSuffixString(path, ".dat");
 }
@@ -180,6 +182,8 @@ public:
     Status append(const Slice& data) override { return appendv(&data, 1); }
 
     Status appendv(const Slice* data, size_t cnt) override {
+
+        LOG(WARNING) << "appendv debugInfo:" << _filename <<",stack:" << get_stack_trace();
         size_t bytes_written = 0;
         RETURN_IF_ERROR(do_writev_at(_fd, _filename, _filesize, data, cnt, &bytes_written));
         _filesize += bytes_written;
@@ -289,6 +293,8 @@ public:
     Type type() const override { return POSIX; }
 
     StatusOr<std::unique_ptr<SequentialFile>> new_sequential_file(const string& fname) override {
+
+        LOG(WARNING) << "new_sequential_file new_sequential_file:" << ",stack:" << get_stack_trace();
         int fd;
         RETRY_ON_EINTR(fd, ::open(fname.c_str(), O_RDONLY));
         if (fd < 0) {
@@ -306,6 +312,7 @@ public:
 
     StatusOr<std::unique_ptr<RandomAccessFile>> new_random_access_file(const RandomAccessFileOptions& opts,
                                                                        const std::string& fname) override {
+        LOG(WARNING) << "new_random_access_file new_sequential_file:" << ",stack:" << get_stack_trace();
         if (config::file_descriptor_cache_capacity > 0 && enable_fd_cache(fname)) {
             FdCache::Handle* h = FdCache::Instance()->lookup(fname);
             if (h == nullptr) {
@@ -337,6 +344,7 @@ public:
 
     StatusOr<std::unique_ptr<WritableFile>> new_writable_file(const WritableFileOptions& opts,
                                                               const string& fname) override {
+        LOG(WARNING) << "new_writable_file new_sequential_file:" << ",stack:" << get_stack_trace();
         int fd = 0;
         RETURN_IF_ERROR(do_open(fname, opts.mode, &fd));
 
