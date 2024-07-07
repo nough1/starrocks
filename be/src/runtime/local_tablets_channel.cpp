@@ -260,6 +260,7 @@ void LocalTabletsChannel::add_chunk(vectorized::Chunk* chunk, const PTabletWrite
                                   << " wait tablet " << tablet_id << " secondary replica finish timeout "
                                   << request.timeout_ms() << "ms still in state " << state;
                         timeout = true;
+                        LOG(WARNING) << "debugInfo:" << get_stack_trace();
                         break;
                     }
 
@@ -268,6 +269,7 @@ void LocalTabletsChannel::add_chunk(vectorized::Chunk* chunk, const PTabletWrite
                                   << " wait tablet " << tablet_id << " secondary replica finish already "
                                   << std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count() / 1000
                                   << "ms still in state " << state;
+                        LOG(WARNING) << "debugInfo:" << get_stack_trace();
                     }
                 } while (true);
             }
