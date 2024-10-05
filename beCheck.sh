@@ -24,7 +24,7 @@ do
 	    break
         else
             echo "$(date) - BUILD SUCCESS not found in log. Restarting..." >> /tmp/check.log
-	    export BUILD_TYPE=Asan
+	    export BUILD_TYPE=Debug
             nohup ./build.sh --be &
         fi
     fi
