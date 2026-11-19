@@ -1261,14 +1261,16 @@ public class TablePruningTest extends TablePruningTestBase {
     }
 
 
+
+
     @Test
     public void testRboJoinReorderSkipsExpressionEqualityPredicate() throws Exception {
-        String createTableSql = "CREATE TABLE rbo_expr_predicate_test (\\n" +
-                "  k1 BIGINT NOT NULL,\\n" +
-                "  k2 BIGINT\\n" +
-                ") PRIMARY KEY(k1)\\n" +
-                "DISTRIBUTED BY HASH(k1) BUCKETS 1\\n" +
-                "PROPERTIES(\\\"replication_num\\\"=\\\"1\\");";
+        String createTableSql = "CREATE TABLE rbo_expr_predicate_test (\n" +
+                "  k1 BIGINT NOT NULL,\n" +
+                "  k2 BIGINT\n" +
+                ") PRIMARY KEY(k1)\n" +
+                "DISTRIBUTED BY HASH(k1) BUCKETS 1\n" +
+                "PROPERTIES(\"replication_num\"=\"1\");";
         starRocksAssert.withTable(createTableSql);
         try {
             ctx.getSessionVariable().setEnableCboTablePrune(false);
@@ -1283,5 +1285,4 @@ public class TablePruningTest extends TablePruningTestBase {
             starRocksAssert.dropTable("rbo_expr_predicate_test");
         }
     }
-
 }
