@@ -1066,7 +1066,15 @@ public class FrontendServiceImpl implements FrontendService.Iface {
 
     @Override
     public TReportExecStatusResult reportExecStatus(TReportExecStatusParams params) throws TException {
-        return QeProcessorImpl.INSTANCE.reportExecStatus(params, getClientAddr());
+        String requestUuid = logRpcRequest("report_exec_status", params);
+        try {
+            TReportExecStatusResult result = QeProcessorImpl.INSTANCE.reportExecStatus(params, getClientAddr());
+            logRpcResponse("report_exec_status", requestUuid, result, null);
+            return result;
+        } catch (Exception e) {
+            logRpcResponse("report_exec_status", requestUuid, null, e);
+            throw e;
+        }
     }
 
     @Override
@@ -1162,6 +1170,7 @@ public class FrontendServiceImpl implements FrontendService.Iface {
 
     @Override
     public TLoadTxnBeginResult loadTxnBegin(TLoadTxnBeginRequest request) throws TException {
+        String requestUuid = logRpcRequest("load_txn_begin", request);
         String clientAddr = getClientAddrAsString();
         LOG.info("receive txn begin request, db: {}, tbl: {}, label: {}, backend: {}",
                 request.getDb(), request.getTbl(), request.getLabel(), clientAddr);
@@ -1204,8 +1213,10 @@ public class FrontendServiceImpl implements FrontendService.Iface {
             LOG.warn("catch unknown result.", e);
             status.setStatus_code(TStatusCode.INTERNAL_ERROR);
             status.addToError_msgs(Strings.nullToEmpty(e.getMessage()));
+            logRpcResponse("load_txn_begin", requestUuid, result, null);
             return result;
         }
+        logRpcResponse("load_txn_begin", requestUuid, result, null);
         return result;
     }
 
@@ -1273,6 +1284,7 @@ public class FrontendServiceImpl implements FrontendService.Iface {
 
     @Override
     public TLoadTxnCommitResult loadTxnCommit(TLoadTxnCommitRequest request) throws TException {
+        String requestUuid = logRpcRequest("load_txn_commit", request);
         String clientAddr = getClientAddrAsString();
         LOG.debug("receive txn commit request. db: {}, tbl: {}, txn_id: {}, backend: {}",
                 request.getDb(), request.getTbl(), request.getTxnId(), clientAddr);
@@ -1309,8 +1321,10 @@ public class FrontendServiceImpl implements FrontendService.Iface {
             LOG.warn("catch unknown result.", e);
             status.setStatus_code(TStatusCode.INTERNAL_ERROR);
             status.addToError_msgs(Strings.nullToEmpty(e.getMessage()));
+            logRpcResponse("load_txn_commit", requestUuid, result, null);
             return result;
         }
+        logRpcResponse("load_txn_commit", requestUuid, result, null);
         return result;
     }
 
@@ -1395,6 +1409,7 @@ public class FrontendServiceImpl implements FrontendService.Iface {
 
     @Override
     public TGetLoadTxnStatusResult getLoadTxnStatus(TGetLoadTxnStatusRequest request) throws TException {
+        String requestUuid = logRpcRequest("get_load_txn_status", request);
         String clientAddr = getClientAddrAsString();
         LOG.debug("receive get txn status request. db: {}, tbl: {}, txn_id: {}, backend: {}",
                 request.getDb(), request.getTbl(), request.getTxnId(), clientAddr);
@@ -1427,11 +1442,13 @@ public class FrontendServiceImpl implements FrontendService.Iface {
             result.setStatus(TTransactionStatus.UNKNOWN);
             LOG.warn("catch unknown result.", e);
         }
+        logRpcResponse("get_load_txn_status", requestUuid, result, null);
         return result;
     }
 
     @Override
     public TLoadTxnCommitResult loadTxnPrepare(TLoadTxnCommitRequest request) throws TException {
+        String requestUuid = logRpcRequest("load_txn_prepare", request);
         String clientAddr = getClientAddrAsString();
         LOG.debug("receive txn prepare request. db: {}, tbl: {}, txn_id: {}, backend: {}",
                 request.getDb(), request.getTbl(), request.getTxnId(), clientAddr);
@@ -1458,8 +1475,10 @@ public class FrontendServiceImpl implements FrontendService.Iface {
             LOG.warn("catch unknown result.", e);
             status.setStatus_code(TStatusCode.INTERNAL_ERROR);
             status.addToError_msgs(Strings.nullToEmpty(e.getMessage()));
+            logRpcResponse("load_txn_prepare", requestUuid, result, null);
             return result;
         }
+        logRpcResponse("load_txn_prepare", requestUuid, result, null);
         return result;
     }
 
@@ -1490,6 +1509,7 @@ public class FrontendServiceImpl implements FrontendService.Iface {
 
     @Override
     public TLoadTxnRollbackResult loadTxnRollback(TLoadTxnRollbackRequest request) throws TException {
+        String requestUuid = logRpcRequest("load_txn_rollback", request);
         String clientAddr = getClientAddrAsString();
         LOG.debug("receive txn rollback request. db: {}, tbl: {}, txn_id: {}, reason: {}, backend: {}",
                 request.getDb(), request.getTbl(), request.getTxnId(), request.getReason(), clientAddr);
@@ -1520,9 +1540,11 @@ public class FrontendServiceImpl implements FrontendService.Iface {
             LOG.warn("catch unknown result.", e);
             status.setStatus_code(TStatusCode.INTERNAL_ERROR);
             status.addToError_msgs(Strings.nullToEmpty(e.getMessage()));
+            logRpcResponse("load_txn_rollback", requestUuid, result, null);
             return result;
         }
 
+        logRpcResponse("load_txn_rollback", requestUuid, result, null);
         return result;
     }
 
@@ -1729,6 +1751,274 @@ public class FrontendServiceImpl implements FrontendService.Iface {
     private String getClientAddrAsString() {
         TNetworkAddress addr = getClientAddr();
         return addr == null ? "unknown" : addr.hostname;
+    }
+
+    /**
+     * 记录 RPC 请求日志（BE->FE）
+     */
+    private <T> String logRpcRequest(String methodName, T request) {
+        String requestUuid = UUID.randomUUID().toString();
+        String clientAddr = getClientAddrAsString();
+        String requestStr = request != null ? thriftObjectToJson(request) : "null";
+        
+        // 第一行：摘要日志（调用前）
+        LOG.info("[BE->FE RPC] {} START, request_uuid={}, client={}",
+                methodName, requestUuid, clientAddr);
+        
+        // 第二行：完整请求参数（JSON 格式）
+        LOG.info("[BE->FE RPC] {} REQUEST, request_uuid={}, client={}, request={}",
+                methodName, requestUuid, clientAddr, requestStr);
+        
+        return requestUuid;
+    }
+
+    /**
+     * 记录 RPC 响应日志（BE->FE）
+     */
+    private <T> void logRpcResponse(String methodName, String requestUuid, T result, Exception exception) {
+        String clientAddr = getClientAddrAsString();
+        
+        if (exception != null) {
+            // 第一行：摘要日志（失败）
+            LOG.warn("[BE->FE RPC] {} END, request_uuid={}, client={}, status=EXCEPTION, error={}",
+                    methodName, requestUuid, clientAddr, exception.getMessage());
+            // 第二行：完整异常信息
+            LOG.warn("[BE->FE RPC] {} RESPONSE, request_uuid={}, client={}, exception={}",
+                    methodName, requestUuid, clientAddr, exception.toString(), exception);
+        } else {
+            // 第一行：摘要日志（成功）
+            String status = "SUCCESS";
+            if (result instanceof TFeResult) {
+                TFeResult r = (TFeResult) result;
+                if (r.status != null && r.status.status_code != OK) {
+                    status = "FAILED";
+                }
+            } else if (result instanceof TMasterResult) {
+                TMasterResult r = (TMasterResult) result;
+                if (r.status != null && r.status.status_code != OK) {
+                    status = "FAILED";
+                }
+            }
+            LOG.info("[BE->FE RPC] {} END, request_uuid={}, client={}, status={}",
+                    methodName, requestUuid, clientAddr, status);
+            
+            // 第二行：完整响应（JSON 格式，打印所有字段）
+            String responseStr = result != null ? thriftObjectToJson(result) : "null";
+            LOG.info("[BE->FE RPC] {} RESPONSE, request_uuid={}, client={}, result={}",
+                    methodName, requestUuid, clientAddr, responseStr);
+        }
+    }
+    
+    /**
+     * 将 Thrift 对象转换为 JSON（使用反射获取所有字段）
+     */
+    private String thriftObjectToJson(Object obj) {
+        return thriftObjectToJson(obj, new java.util.HashSet<Integer>(), 0);
+    }
+    
+    /**
+     * 将 Thrift 对象转换为 JSON（使用反射获取所有字段），带循环检测
+     */
+    private String thriftObjectToJson(Object obj, java.util.Set<Integer> visited, int depth) {
+        if (obj == null) {
+            return "null";
+        }
+        // 检测循环引用 - 使用 System.identityHashCode 来检测对象引用
+        int objId = System.identityHashCode(obj);
+        if (visited.contains(objId)) {
+            return "\"<circular_reference>\"";
+        }
+        visited.add(objId);
+        try {
+            java.lang.reflect.Field[] fields = obj.getClass().getDeclaredFields();
+            StringBuilder sb = new StringBuilder();
+            sb.append("{");
+            boolean first = true;
+            for (java.lang.reflect.Field field : fields) {
+                // 跳过一些可能导致问题的字段
+                String fieldName = field.getName();
+                // 跳过 Thrift 内部字段、静态字段、final 字段等
+                if (fieldName.startsWith("__") 
+                        || fieldName.equals("__isset_bitfield")
+                        || java.lang.reflect.Modifier.isStatic(field.getModifiers())
+                        || java.lang.reflect.Modifier.isFinal(field.getModifiers())) {
+                    continue;
+                }
+                try {
+                    if (!field.isAccessible()) {
+                        field.setAccessible(true);
+                    }
+                    Object value = field.get(obj);
+                    if (value != null) {
+                        // 跳过基本类型包装类，直接处理
+                        if (value instanceof String || value instanceof Number || value instanceof Boolean 
+                                || value instanceof Enum || value instanceof Character) {
+                            if (!first) {
+                                sb.append(", ");
+                            }
+                            first = false;
+                            sb.append("\"").append(fieldName).append("\":");
+                            appendJsonValue(sb, value, visited, depth + 1);
+                        } else if (value instanceof java.util.List || value instanceof java.util.Map 
+                                || value instanceof byte[]) {
+                            // 集合类型，需要递归处理
+                            if (!first) {
+                                sb.append(", ");
+                            }
+                            first = false;
+                            sb.append("\"").append(fieldName).append("\":");
+                            appendJsonValue(sb, value, visited, depth + 1);
+                        } else {
+                            // 复杂对象，检查是否已经访问过
+                            int valueId = System.identityHashCode(value);
+                            if (visited.contains(valueId)) {
+                                // 循环引用，跳过
+                                if (!first) {
+                                    sb.append(", ");
+                                }
+                                first = false;
+                                sb.append("\"").append(fieldName).append("\":\"<circular_reference>\"");
+                            } else {
+                                // 继续递归
+                                if (!first) {
+                                    sb.append(", ");
+                                }
+                                first = false;
+                                sb.append("\"").append(fieldName).append("\":");
+                                appendJsonValue(sb, value, visited, depth + 1);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    // 跳过无法访问的字段
+                    continue;
+                }
+            }
+            sb.append("}");
+            visited.remove(objId);
+            return sb.toString();
+        } catch (Exception e) {
+            visited.remove(objId);
+            return "\"<serialization_error:" + escapeJsonString(e.getMessage()) + ">\"";
+        }
+    }
+    
+    /**
+     * 将 Map 转换为 JSON
+     */
+    private String mapToJson(java.util.Map<?, ?> map) {
+        return mapToJson(map, new java.util.HashSet<Integer>(), 0);
+    }
+    
+    /**
+     * 将 Map 转换为 JSON，带循环检测
+     */
+    private String mapToJson(java.util.Map<?, ?> map, java.util.Set<Integer> visited, int depth) {
+        if (map == null) {
+            return "null";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        boolean first = true;
+        for (java.util.Map.Entry<?, ?> entry : map.entrySet()) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
+            sb.append("\"").append(entry.getKey()).append("\":");
+            appendJsonValue(sb, entry.getValue(), visited, depth + 1);
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+    
+    /**
+     * 追加 JSON 值
+     */
+    private void appendJsonValue(StringBuilder sb, Object value) {
+        appendJsonValue(sb, value, new java.util.HashSet<Integer>(), 0);
+    }
+    
+    /**
+     * 追加 JSON 值，带循环检测
+     */
+    private void appendJsonValue(StringBuilder sb, Object value, java.util.Set<Integer> visited, int depth) {
+        if (value == null) {
+            sb.append("null");
+        } else if (value instanceof String) {
+            sb.append("\"").append(escapeJsonString((String) value)).append("\"");
+        } else if (value instanceof Number || value instanceof Boolean) {
+            sb.append(value);
+        } else if (value instanceof Enum) {
+            sb.append("\"").append(escapeJsonString(value.toString())).append("\"");
+        } else if (value instanceof java.util.List) {
+            sb.append("[");
+            java.util.List<?> list = (java.util.List<?>) value;
+            boolean listFirst = true;
+            for (Object item : list) {
+                if (!listFirst) {
+                    sb.append(", ");
+                }
+                listFirst = false;
+                appendJsonValue(sb, item, visited, depth + 1);
+            }
+            sb.append("]");
+        } else if (value instanceof java.util.Map) {
+            sb.append(mapToJson((java.util.Map<?, ?>) value, visited, depth + 1));
+        } else if (value instanceof byte[]) {
+            byte[] bytes = (byte[]) value;
+            if (bytes.length > 100) {
+                sb.append("\"byte[").append(bytes.length).append("]\"");
+            } else {
+                sb.append("\"").append(java.util.Base64.getEncoder().encodeToString(bytes)).append("\"");
+            }
+        } else {
+            // 嵌套对象，递归调用
+            sb.append(thriftObjectToJson(value, visited, depth + 1));
+        }
+    }
+    
+    /**
+     * 转义 JSON 字符串中的特殊字符
+     */
+    private String escapeJsonString(String str) {
+        if (str == null) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (char c : str.toCharArray()) {
+            switch (c) {
+                case '"':
+                    sb.append("\\\"");
+                    break;
+                case '\\':
+                    sb.append("\\\\");
+                    break;
+                case '\b':
+                    sb.append("\\b");
+                    break;
+                case '\f':
+                    sb.append("\\f");
+                    break;
+                case '\n':
+                    sb.append("\\n");
+                    break;
+                case '\r':
+                    sb.append("\\r");
+                    break;
+                case '\t':
+                    sb.append("\\t");
+                    break;
+                default:
+                    if (c < 0x20) {
+                        sb.append(String.format("\\u%04x", (int) c));
+                    } else {
+                        sb.append(c);
+                    }
+                    break;
+            }
+        }
+        return sb.toString();
     }
 
     @Override
