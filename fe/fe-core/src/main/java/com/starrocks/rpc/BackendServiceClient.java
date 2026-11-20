@@ -795,9 +795,9 @@ public class BackendServiceClient {
         LOG.info("[FE->BE RPC] fetch_data START, request_uuid={}, address={}, finst_id={}",
                 requestUuid, addressStr, finstIdStr);
         
-        // 第二行：完整请求参数
+        // 第二行：完整请求参数（JSON 格式）
         LOG.info("[FE->BE RPC] fetch_data REQUEST, request_uuid={}, address={}, finst_id={}, request={}",
-                requestUuid, addressStr, finstIdStr, request.toString());
+                requestUuid, addressStr, finstIdStr, protobufToJson(request));
         
         try {
             PBackendService service = BrpcProxy.getBackendService(address);
@@ -822,9 +822,9 @@ public class BackendServiceClient {
         LOG.info("[FE->BE RPC] trigger_profile_report START, request_uuid={}, address={}, query_id={}",
                 requestUuid, addressStr, queryIdStr);
         
-        // 第二行：完整请求参数
+        // 第二行：完整请求参数（JSON 格式）
         LOG.info("[FE->BE RPC] trigger_profile_report REQUEST, request_uuid={}, address={}, query_id={}, request={}",
-                requestUuid, addressStr, queryIdStr, request.toString());
+                requestUuid, addressStr, queryIdStr, protobufToJson(request));
         
         try {
             final PBackendService service = BrpcProxy.getBackendService(address);
@@ -848,9 +848,9 @@ public class BackendServiceClient {
         LOG.info("[FE->BE RPC] collect_query_statistics START, request_uuid={}, address={}",
                 requestUuid, addressStr);
         
-        // 第二行：完整请求参数
+        // 第二行：完整请求参数（JSON 格式）
         LOG.info("[FE->BE RPC] collect_query_statistics REQUEST, request_uuid={}, address={}, request={}",
-                requestUuid, addressStr, request.toString());
+                requestUuid, addressStr, protobufToJson(request));
         
         try {
             final PBackendService service = BrpcProxy.getBackendService(address);
@@ -873,9 +873,9 @@ public class BackendServiceClient {
         LOG.info("[FE->BE RPC] get_info START, request_uuid={}, address={}",
                 requestUuid, addressStr);
         
-        // 第二行：完整请求参数
+        // 第二行：完整请求参数（JSON 格式）
         LOG.info("[FE->BE RPC] get_info REQUEST, request_uuid={}, address={}, request={}",
-                requestUuid, addressStr, request.toString());
+                requestUuid, addressStr, protobufToJson(request));
         
         try {
             final PBackendService service = BrpcProxy.getBackendService(address);
@@ -899,9 +899,9 @@ public class BackendServiceClient {
         LOG.info("[FE->BE RPC] get_pulsar_info START, request_uuid={}, address={}",
                 requestUuid, addressStr);
         
-        // 第二行：完整请求参数
+        // 第二行：完整请求参数（JSON 格式）
         LOG.info("[FE->BE RPC] get_pulsar_info REQUEST, request_uuid={}, address={}, request={}",
-                requestUuid, addressStr, request.toString());
+                requestUuid, addressStr, protobufToJson(request));
         
         try {
             final PBackendService service = BrpcProxy.getBackendService(address);
@@ -925,9 +925,9 @@ public class BackendServiceClient {
         LOG.info("[FE->BE RPC] get_file_schema START, request_uuid={}, address={}",
                 requestUuid, addressStr);
         
-        // 第二行：完整请求参数
+        // 第二行：完整请求参数（JSON 格式）
         LOG.info("[FE->BE RPC] get_file_schema REQUEST, request_uuid={}, address={}, request={}",
-                requestUuid, addressStr, request.toString());
+                requestUuid, addressStr, protobufToJson(request));
         
         try {
             final PBackendService service = BrpcProxy.getBackendService(address);
@@ -952,9 +952,9 @@ public class BackendServiceClient {
         LOG.info("[FE->BE RPC] submit_mv_maintenance_task START, request_uuid={}, address={}",
                 requestUuid, addressStr);
         
-        // 第二行：完整请求参数
+        // 第二行：完整请求参数（JSON 格式）
         LOG.info("[FE->BE RPC] submit_mv_maintenance_task REQUEST, request_uuid={}, address={}, request={}",
-                requestUuid, addressStr, tRequest != null ? tRequest.toString() : "null");
+                requestUuid, addressStr, tRequest != null ? thriftObjectToJson(tRequest) : "null");
         
         PMVMaintenanceTaskRequest pRequest = new PMVMaintenanceTaskRequest();
         pRequest.setRequest(tRequest);
@@ -1002,9 +1002,9 @@ public class BackendServiceClient {
         LOG.info("[FE->BE RPC] execute_command START, request_uuid={}, address={}, command={}",
                 requestUuid, addressStr, commandStr);
         
-        // 第二行：完整请求参数
+        // 第二行：完整请求参数（JSON 格式）
         LOG.info("[FE->BE RPC] execute_command REQUEST, request_uuid={}, address={}, command={}, request={}",
-                requestUuid, addressStr, commandStr, request.toString());
+                requestUuid, addressStr, commandStr, protobufToJson(request));
         
         try {
             final PBackendService service = BrpcProxy.getBackendService(address);
@@ -1028,9 +1028,9 @@ public class BackendServiceClient {
         LOG.info("[FE->BE RPC] update_failpoint_status START, request_uuid={}, address={}",
                 requestUuid, addressStr);
         
-        // 第二行：完整请求参数
+        // 第二行：完整请求参数（JSON 格式）
         LOG.info("[FE->BE RPC] update_failpoint_status REQUEST, request_uuid={}, address={}, request={}",
-                requestUuid, addressStr, request.toString());
+                requestUuid, addressStr, protobufToJson(request));
         
         try {
             final PBackendService service = BrpcProxy.getBackendService(address);
@@ -1054,9 +1054,9 @@ public class BackendServiceClient {
         LOG.info("[FE->BE RPC] list_failpoint START, request_uuid={}, address={}",
                 requestUuid, addressStr);
         
-        // 第二行：完整请求参数
+        // 第二行：完整请求参数（JSON 格式）
         LOG.info("[FE->BE RPC] list_failpoint REQUEST, request_uuid={}, address={}, request={}",
-                requestUuid, addressStr, request.toString());
+                requestUuid, addressStr, protobufToJson(request));
         
         try {
             final PBackendService service = BrpcProxy.getBackendService(address);
@@ -1080,9 +1080,9 @@ public class BackendServiceClient {
         LOG.info("[FE->BE RPC] process_dictionary_cache START, request_uuid={}, address={}",
                 requestUuid, addressStr);
         
-        // 第二行：完整请求参数
+        // 第二行：完整请求参数（JSON 格式）
         LOG.info("[FE->BE RPC] process_dictionary_cache REQUEST, request_uuid={}, address={}, request={}",
-                requestUuid, addressStr, request.toString());
+                requestUuid, addressStr, protobufToJson(request));
         
         try {
             final PBackendService service = BrpcProxy.getBackendService(address);
